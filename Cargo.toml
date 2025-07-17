@@ -18,7 +18,9 @@ edition = "2018"
 rust-version = "1.51.0"
 
 [dependencies]
+half = { version = "2.6", optional = true }
 
 [features]
 default = ["std"]
 std = []
+half = ["dep:half"]

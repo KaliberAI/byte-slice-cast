@@ -68,6 +68,9 @@ use core::{fmt, mem, slice};
 #[cfg(feature = "std")]
 use std::error::Error as StdError;
 
+#[cfg(feature = "half")]
+use half::f16;
+
 /// Possible errors during slice conversion.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum Error {
@@ -499,6 +502,8 @@ impl_trait!(f32);
 impl_trait!(f64);
 impl_trait!(usize);
 impl_trait!(isize);
+#[cfg(feature = "half")]
+impl_trait!(f16);
 
 impl_trait_array!(u8);
 impl_trait_array!(u16);
@@ -514,6 +519,8 @@ impl_trait_array!(f32);
 impl_trait_array!(f64);
 impl_trait_array!(usize);
 impl_trait_array!(isize);
+#[cfg(feature = "half")]
+impl_trait_array!(f16);
 
 impl TypeName for () {
     const TYPE_NAME: &'static str = "()";
