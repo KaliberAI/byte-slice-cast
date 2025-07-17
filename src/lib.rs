@@ -707,6 +707,43 @@ mod tests {
         assert_eq!(bytes.as_slice_of::<usize>(), Ok(slice.as_ref()));
     }
 
+    #[cfg(feature = "half")]
+    #[test]
+    fn f16() {
+        use half::f16;
+
+        let slice: [f16; 4] = [
+            f16::from_f32(2.0),
+            f16::from_f32(1.0),
+            f16::from_f32(0.5),
+            f16::from_f32(0.25),
+        ];
+        let bytes = slice.as_byte_slice();
+
+        if cfg!(target_endian = "big") {
+            assert_eq!(bytes, [0x40, 0x00, 0x3c, 0x00, 0x38, 0x00, 0x34, 0x00]);
+        } else {
+            assert_eq!(bytes, [0x00, 0x40, 0x00, 0x3c, 0x00, 0x38, 0x00, 0x34]);
+        };
+
+        assert_eq!(
+            (bytes[1..]).as_slice_of::<f16>(),
+            Err(Error::AlignmentMismatch {
+                dst_type: "f16",
+                dst_minimum_alignment: mem::align_of::<f16>()
+            })
+        );
+        assert_eq!(
+            (bytes[0..7]).as_slice_of::<f16>(),
+            Err(Error::LengthMismatch {
+                dst_type: "f16",
+                src_slice_size: 7,
+                dst_type_size: 2
+            })
+        );
+        assert_eq!(bytes.as_slice_of::<f16>(), Ok(slice.as_ref()));
+    }
+
     #[test]
     fn f32() {
         let slice: [f32; 4] = [2.0, 1.0, 0.5, 0.25];
